@@ -46,9 +46,12 @@ export function watchFiles() {
   watch(`src/**/*.*`, series('emailCopy'))
 }
 
-const task = series(
-  clean,
-  parallel(emailCopy, serverInit, watchFiles)
+const taskDev = series(
+  clean, parallel(emailCopy, serverInit, watchFiles)
 )
 
-export { task as default }
+const taskBuild = series(
+  clean, emailCopy
+)
+
+export { taskDev as default, taskBuild as build }
