@@ -6,15 +6,6 @@ import server from 'browser-sync'
 import notify from 'gulp-notify'
 import plumber from 'gulp-plumber'
 
-const source = ((base) => ({
-  email:  `${base}/email`
-}))('src')
-
-const build = ((base) => ({
-  root:   `${base}`,
-  email:  `${base}/email`
-}))('dist')
-
 const Server = server.create()
 
 const errorHandler = function() {
@@ -26,12 +17,12 @@ const errorHandler = function() {
   this.emit('end')
 }
 
-export const clean = () => del([`${build.root}/`])
+export const clean = () => del([`dist/`])
 
 export function serverInit() {
   Server.init({
     server: {
-      baseDir: `${build.root}/`
+      baseDir: `dist/`
     },
     port: 8080,
     logLevel: 'info',
@@ -46,13 +37,13 @@ export function serverInit() {
 }
 
 export function emailCopy() {
-  return src(`${source.email}/**/*.*`)
+  return src(`src/**/*.*`)
     .pipe(plumber({ errorHandler }))
-    .pipe(dest(`${build.email}/`))
+    .pipe(dest(`dist/`))
 }
 
 export function watchFiles() {
-  watch(`${source.email}/**/*.*`, series('emailCopy'))
+  watch(`src/**/*.*`, series('emailCopy'))
 }
 
 const task = series(
